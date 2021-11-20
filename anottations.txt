@@ -1,0 +1,18 @@
+Resumo das explicações sobre o processo de iniciar sensores virtuais e sobre a comunicação entre sensor e Gateway:
+- Arquivos em anexo (tatu.py; main.py; config.json; sensors.py) - para quem não quiser baixar/usar o simulador;
+Processo de execução:
+Passo 1 - Iniciar sensor virtual:
+python3 main.py --name sc01 --broker 192.168.0.129
+obs: sc01 é o nome do device/sensor e o ip do servidor/gateway é 192.168.0.129
+
+Passo 2 - Enviar mensagem solicitando que o sensor comece a publicar amostras:
+
+mosquitto_pub -t 'dev/sc01' -h 'localhost' -p 1888 -m '{"method":"flow", "sensor":"solarradiationSensor", "time":{"collect":5000,"publish":5000}}'
+OBS: Iniciando a publicação de amostras do dispositivo sc01 sensor de radiação solar.
+
+Passo 3 - Verificar se as mensagens estão sendo enviadas
+mosquitto_sub -t '#' -h 192.168.0.129
+
+Instalações prévias:
+MQTT Client e Servidor, no ubuntu: sudo apt install mosquitto mosquitto-clients -y
+Paho-mqtt, no ubuntu: pip install paho-mqtt

@@ -1,0 +1,46 @@
+.dashboard {
+  display: flex;
+  height: 100%;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  width: 100%;
+  margin-top: -50px;
+  padding-top: 50px;
+}
+
+.form {
+  width: 100%;
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.input {
+  margin-right: 10px;
+  flex-grow: 2;
+}
+
+.sensor-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  margin: 0 auto;
+}
+
+.sensor-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+}
+
+.sensor-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
