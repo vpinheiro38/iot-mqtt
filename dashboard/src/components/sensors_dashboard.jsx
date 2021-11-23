@@ -2,24 +2,21 @@ import { useState } from "react"
 import '../stylesheets/dashboard.css'
 import Sensor from "./sensor"
 
-function SensorsDashboard({ onAddSensor }) {
-  const [sensors, setSensors] = useState([])
+function SensorsDashboard({ onAddSensor, onRemoveSensor, sensors }) {
   const [addSensorText, setAddSensorText] = useState('')
 
-  const onClickToAddSensor = () => {
+  const onClickToAddSensor = (event) => {
+    event.preventDefault()
     if (!addSensorText) return
-    //onAddSensor(addSensorText)
-    setSensors(sensors => [...sensors, addSensorText])
+    onAddSensor(addSensorText)
   }
 
   const renderAddSensor = () => (
     <form className='form'>
-      <label>
-        <input 
-          className="input" type="text" placeholder='Nome do Sensor'
-          onChange={e => setAddSensorText(e.target.value)}
-        />
-      </label>
+      <input
+        className="input" type="text" placeholder='Nome do Sensor'
+        onChange={e => setAddSensorText(e.target.value)}
+      />
       <div>
         <button 
           className="button is-primary is-fullwidth"
@@ -33,8 +30,8 @@ function SensorsDashboard({ onAddSensor }) {
 
   const renderSensorList = () => (
     <div className='sensor-list'>
-      {sensors.map(sensor => (
-        <Sensor key={sensor} sensor={sensor} />
+      {Object.values(sensors).map(sensor => (
+        <Sensor key={sensor} sensor={sensor} onRemove={onRemoveSensor} />
       ))}
     </div>
   )

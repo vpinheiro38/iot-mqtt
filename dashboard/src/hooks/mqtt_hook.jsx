@@ -15,6 +15,11 @@ export const buttonText = [
   'Desconectar'
 ]
 
+export const sensorTypes = {
+  humiditySensor: { type: 'umidade', unit: 'kg/m³' },
+  temperatureSensor: { type: 'temperatura', unit: 'ºC' }
+}
+
 function useMQTT(onConnect, onReconnect, onError, onMessage, options = { 
   clientId: 'mqttjs_dashboard', 
   host: 'localhost', 
@@ -65,12 +70,17 @@ function useMQTT(onConnect, onReconnect, onError, onMessage, options = {
     client.end()
   }
 
-  const subscribe = (sensorName) => {
+  const subscribe = (sensorTopic, errorOnSubscribe) => {
     if (!client) return
-    client.subscribe(sensorName, { qos: 0 })
+    client.subscribe(sensorTopic, { qos: 0 }, (err, granted) => errorOnSubscribe(sensorTopic, err, granted))
   }
 
-  return [connect, disconnect, subscribe]
+  const unsubscribe = (sensorName) => {
+    if (!client) return
+    client.unsubscribe(sensorName)
+  }
+
+  return [connect, disconnect, subscribe, unsubscribe]
 }
 
 export default useMQTT;

@@ -10,6 +10,7 @@ import './stylesheets/App.css';
 
 function App() {
   const [connectionStatus, setConnectionStatus] = useState(Connection.DISCONNECTED)
+  const [sensors, setSensors] = useState({})
 
   const onConnect = () => {
     toast.success("Conectado com sucesso!")
@@ -26,25 +27,48 @@ function App() {
   }
 
   const onMessage = (topic, message) => {
-
+    const sensor = { topic, message }
+    console.log(message)
+    setSensors({ ...sensors, [topic]: sensor })
   }
   
-  const [connect, disconnect, subscribe] = useMQTT(onConnect, onReconnect, onError, onMessage)
+  const [connect, disconnect, subscribe, unsubscribe] = useMQTT(onConnect, onReconnect, onError, onMessage)
 
   const onClickToConnect = () => {
     setConnectionStatus(Connection.CONNECTING)
     connect()
   }
 
-  const onAddSensor = (sensorName) => {
-    subscribe(sensorName)
+  const errorOnSubscribe = (topic, error, granted) => {
+    if (!error) return
+    setSensors({
+      ...sensors,
+      [topic]: { topic, message: 'error'}
+    })
   }
+
+  const onAddSensor = (sensorName) => {
+    const sensorTopic = `dev/${sensorName}/RES`
+    subscribe(sensorTopic, errorOnSubscribe)
+    setSensors({ ...sensors, [sensorTopic]: { topic: sensorTopic } })
+  }
+
+  const onRemoveSensor = (sensorTopic) => {
+    unsubscribe(sensorTopic)
+    const newSensor = { ...sensors }
+    delete newSensor[sensorTopic]
+    setSensors(newSensor)
+  }
+
+  console.log(sensors)
 
   const renderContent = () => {
     return (connectionStatus === Connection.CONNECTED)
       ? (
         <SensorsDashboard
           onAddSensor={onAddSensor}
+          onRemoveSensor={onRemoveSensor}
+          sensors={sensors}
         />
       ) : (
         <ConnectContainer
