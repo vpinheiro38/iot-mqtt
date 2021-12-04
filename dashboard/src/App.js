@@ -54,10 +54,10 @@ function App() {
   }
 
   const onRemoveSensor = (sensorTopic) => {
-    unsubscribe(sensorTopic)
     const newSensor = { ...sensors }
     delete newSensor[sensorTopic]
     setSensors(newSensor)
+    unsubscribe(sensorTopic)
   }
 
   console.log(sensors)

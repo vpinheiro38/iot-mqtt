@@ -1,0 +1,3 @@
+mosquitto -c mosquitto.conf
+python main.py --name sc01 --broker localhost
+mosquitto_pub -t 'dev/sc01' -h 'localhost' -p 1888 -m '{"method":"flow", "sensor":"temperatureSensor", "time":{"collect":5000,"publish":5000}}'
