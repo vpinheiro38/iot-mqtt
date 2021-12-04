@@ -1,17 +1,44 @@
 import { useEffect, useState } from "react"
 import { sensorTypes } from "../hooks/mqtt_hook";
+import { Line } from 'react-chartjs-2';
+import { Chart, CategoryScale, registerables } from 'chart.js'
 
+Chart.register(CategoryScale)
+Chart.register(...registerables)
+
+var data = []
+var hours = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
+
+var hour = 0
 function Sensor({ sensor, onRemove }) {
   const renderLastValue = () => {
 
     const sensorType = sensorTypes[sensor.message.header.sensor].type
     const sensorValue = sensor.message.data[0]
     const sensorUnit = sensorTypes[sensor.message.header.sensor].unit
-
+    data[hour] = sensorValue
+    hour = (hour + 1) % 24
+    
     return (
-      <p className='subtitle is-6'>
-        Último valor de {sensorType}: {sensorValue} {sensorUnit}
-      </p>
+      <>
+	      <p className='subtitle is-6'>
+		Último valor de {sensorType}: {sensorValue} {sensorUnit}
+	      </p>
+	      
+	      <Line
+		  data = {{
+	labels: hours,
+	datasets:[{
+		label: sensorType,
+		data: data,
+		fill: false,
+		borderColor: 'rgb(75, 192, 192)',
+		tension: 0.1
+	}]
+		
+}}
+		/>
+	</>
     )
   }
 
